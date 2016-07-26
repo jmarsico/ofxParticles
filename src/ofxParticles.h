@@ -360,6 +360,16 @@ public:
                 totalParticlesEmitted+=src.numPars;
             }
             
+            void addParticle(ofxParticle *p){
+                particles.push_back(p);
+                
+            }
+            
+            
+            list<ofxParticle*> getParticles(){
+                return particles;
+            }
+            
             void attractTo(ofPoint p, const float accel, const float minDist, const bool consumeParticle){
                 for(list<ofxParticle*>::iterator it = particles.begin(); it != particles.end(); it++){
                     (**it).attractTo(p, accel, minDist, consumeParticle);
