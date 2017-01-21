@@ -22,6 +22,7 @@ public:
     ofVec3f velocity; // pixels/sec
     ofVec3f acceleration; // pixels/sec/sec
     ofColor color;
+    int ID;
     
     ofVec3f rotation;
     ofVec3f rotationalVelocity;
@@ -32,6 +33,11 @@ public:
     float lifeStart;
     float dt;
     int particleID;
+    
+    bool bNoiseOn;
+    float xNoiseCounter;
+    float yNoiseCounter;
+    float zNoiseCounter;
     
     
     bool operator < (const ofxParticle &b){
@@ -46,6 +52,10 @@ public:
             lifeStart = life = 1.0;
             particleID = 0;
             dt = 1.0/60;
+            bNoiseOn = true;
+            xNoiseCounter = ofRandom(2.0);
+            yNoiseCounter = ofRandom(3.0);
+            zNoiseCounter = ofRandom(1.0);
         }
         
         ofxParticle(ofVec3f pos, ofVec3f vel, float size_, float life_){
@@ -243,6 +253,12 @@ public:
             rotation += rotationalVelocity * dt;
             
             life -= dt;
+            bNoiseOn = true;
+            if(bNoiseOn){
+//                position.x += 10.0 * ofSignedNoise(xNoiseCounter + dt * 0.1);
+//                position.y += 10.0 * ofSignedNoise(yNoiseCounter + dt * 0.2);
+//                position.z += 10.0 * ofSignedNoise(zNoiseCounter + dt * 0.8);
+            }
         }
         
         void draw(){
@@ -419,6 +435,16 @@ public:
                 }
                 numParticles-=particlesRemoved;
                 return particlesRemoved;
+            }
+            
+            void cull(int numToCull){
+                
+                for(size_t i = 0; i < numToCull; i++){
+                    list<ofxParticle*>::iterator it = particles.begin();
+                    advance(it, floor(ofRandom(particles.size())));
+                    (**it).life = ofRandom(0.5);
+                }
+
             }
             
             void draw(){
